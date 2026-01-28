@@ -210,8 +210,8 @@ jobs:
           TAG_UAT: ${{ github.ref_name }}-uat
         run: |
             docker tag \
-               "$DOCKER_USER/$IMAGE_NAME:-$TAG_DEV"\
-              "$DOCKER_USER/$IMAGE_NAME:-$TAG_UAT"
+               "$DOCKER_USER/$IMAGE_NAME:$TAG_DEV"\
+              "$DOCKER_USER/$IMAGE_NAME:$TAG_UAT"
   
             docker push "$DOCKER_USER/$IMAGE_NAME:$TAG_UAT"
   
