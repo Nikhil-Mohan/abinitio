@@ -200,7 +200,7 @@ jobs:
         run: |
             docker run --rm \
               -e RUN_MODE=UAT \
-                "$DOCKER_USER/$IMAGE_NAME:${{ github.ref_name }}-$TAG"
+                "$DOCKER_USER/$IMAGE_NAME:-$TAG"
   
       - name: Promote image to UAT
         env:
@@ -210,10 +210,10 @@ jobs:
           TAG_UAT: ${{ github.ref_name }}-uat
         run: |
             docker tag \
-               "$DOCKER_USER/$IMAGE_NAME:${{ github.ref_name }}-$TAG_DEV"\
-              "$DOCKER_USER/$IMAGE_NAME:${{ github.ref_name }}-$TAG_UAT"
+               "$DOCKER_USER/$IMAGE_NAME:-$TAG_DEV"\
+              "$DOCKER_USER/$IMAGE_NAME:-$TAG_UAT"
   
-            docker push "$DOCKER_USER/$IMAGE_NAME:${{ github.ref_name }}-$TAG_UAT"
+            docker push "$DOCKER_USER/$IMAGE_NAME:-$TAG_UAT"
   
 
 # =====================================================
@@ -247,10 +247,10 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
         run: |
             docker tag \
-              "$DOCKER_USER/$IMAGE_NAME":${{ github.ref_name }}-uat \
-              "$DOCKER_USER/$IMAGE_NAME":${{ github.ref_name }}-prod
+              "$DOCKER_USER/$IMAGE_NAME":-uat \
+              "$DOCKER_USER/$IMAGE_NAME":-prod
   
-            docker push "$DOCKER_USER/$IMAGE_NAME":${{ github.ref_name }}-prod
+            docker push "$DOCKER_USER/$IMAGE_NAME":-prod
   
 
 # =====================================================
@@ -277,7 +277,7 @@ jobs:
             docker run --rm \
               -e RUN_MODE=PROD \
               -e COMPONENT_NAME=abinitio-etl-poc \
-              "$DOCKER_USER/$IMAGE_NAME":${{ github.ref_name }}-prod
+              "$DOCKER_USER/$IMAGE_NAME":-prod
   
     # schedule:
     #   - cron: '0 2 * * *'  # Runs daily at 2:00 AM UTC  
