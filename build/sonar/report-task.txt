@@ -1,0 +1,7 @@
+organization=bindumounica
+projectKey=bindumounica_abinitio
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.79051
+dashboardUrl=https://sonarcloud.io/dashboard?id=bindumounica_abinitio
+ceTaskId=AZwEJcxadQoPwBmbK_o_
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZwEJcxadQoPwBmbK_o_
