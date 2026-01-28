@@ -196,7 +196,7 @@ jobs:
         env:
           DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          TAG: ${{ github.ref_name }}-${{ env.TAG }}
+          TAG: ${{ github.ref_name }}-uat
         run: |
             docker run --rm \
               -e RUN_MODE=UAT \
