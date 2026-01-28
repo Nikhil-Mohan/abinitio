@@ -1,0 +1,88 @@
+name: ETL CI POC – Multi Job
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  package-etl:
+    name: Package ETL TAR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK for Gradle
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Run pre-build hook (if present)
+        run: |
+          if [ -f ci/pre-build.sh ]; then
+            echo "Pre-build script found. Making it executable..."
+            chmod +x ci/pre-build.sh
+            echo "Executing pre-build script..."
+            ./ci/pre-build.sh
+          else
+            echo "No pre-build script found. Skipping."
+          fi
+
+
+      - name: Build ETL TAR
+        run: |
+          chmod +x gradlew || true
+          ./gradlew build
+
+      - name: Verify TAR
+        run: |
+          ls -lh build/dist
+          tar -tf build/dist/*.tar
+
+      - name: Post-build validation and metadata
+        run: |
+          chmod +x ci/post-build.sh && true
+          ./ci/post-build.sh
+        env:
+          ARTIFACT_PATH: build/abinitio-component.tar.gz
+          COMPONENT_NAME: abinitio-etl-poc
+          VERSION: 0.1.0
+
+      - name: Upload ETL TAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: etl-tar
+          path: build/dist/*.tar
+          retention-days: 7
+
+  build-image:
+    name: Build Image from TAR
+    runs-on: ubuntu-latest
+    needs: package-etl
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Download ETL TAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: etl-tar
+          path: build/dist
+
+      - name: Verify downloaded TAR
+        run: |
+          ls -lh build/dist
+          tar -tf build/dist/*.tar
+
+
+      - name: Build container image from TAR
+        run: |
+          docker build -t etl-component:1.0.0 .
+
+      - name: Show image details
+        run: |
+          docker images | grep etl-component

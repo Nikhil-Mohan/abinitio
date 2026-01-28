@@ -1,0 +1,5 @@
+.gradle/
+dist/
+.git
+.idea/
+.vscode
