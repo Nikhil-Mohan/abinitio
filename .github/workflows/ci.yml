@@ -135,8 +135,7 @@ jobs:
         run: |
             go test ./transforms/... -coverprofile=coverage.out
       - name: Sonar Scan
-        run: ./gradlew sonar \
-          -Dsonar.go.coverage.reportPaths=coverage.out
+        run: ./gradlew sonar -Dsonar.go.coverage.reportPaths=coverage.out
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
