@@ -8,14 +8,16 @@ component:
 
 inputs:
   - name: user_events
-    type: csv
+    type: dataset
     path: data/raw/user_events.csv
     schema:
       - name: user_id
         type: string
       - name: event_type
         type: string
-    required: true
+      - name: timestamp
+        type: string
+
 
 outputs:
   - name: user_activity_summary
