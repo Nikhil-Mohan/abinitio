@@ -1,0 +1,41 @@
+# In Ab Initio terms, this file is the component contract:
+# “What inputs does this ETL component accept, and what outputs does it guarantee?”
+
+component:
+  name: user_flow_etl
+  version: 1.0.0
+  type: batch-etl
+
+inputs:
+  - name: user_events
+    type: csv
+    path: data/raw/user_events.csv
+    schema:
+      - name: user_id
+        type: string
+      - name: event_type
+        type: string
+    required: true
+
+outputs:
+  - name: user_activity_summary
+    type: csv
+    path: data/curated/user_activity_summary.csv
+    schema:
+      - name: user_id
+        type: string
+      - name: event_count
+        type: integer
+
+runtime:
+  execution: container
+  entrypoint: runtime/master_pipeline.sh
+
+sla:
+  max_runtime_seconds: 300
+  expected_records:
+    min: 1
+
+quality_checks:
+  - not_null: user_id
+  - positive: event_count

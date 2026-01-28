@@ -1,23 +1,31 @@
 plugins {
     id 'base'
-    id "org.sonarqube" version "4.4.1.3373"
+    id "org.sonarqube" version "7.1.0.6387"
 }
+
+sonar {
+  properties {
+    property "sonar.projectKey", "bindumounica_abinitio"
+    property "sonar.organization", "bindumounica"
+  }
+}
+
 ext {
     graphName = 'user_flow'
     versionTag = System.getenv("GITHUB_REF_NAME") ?: "local"
     imageName = "bindumounica87/abinitio-etl-poc:${versionTag}"
 }
-sonarqube {
-     properties {
-        // # --- SonarCloud configuration ---
-        property 'sonar.projectKey', 'bindumounica_github_actions_workflow_abinitio'
-        property 'sonar.organization', 'bindumounica'
-        property 'sonar.host.url', 'https://sonarcloud.io'
+// sonarqube {
+//      properties {
+//         // # --- SonarCloud configuration ---
+//         property 'sonar.projectKey', 'bindumounica_github_actions_workflow_abinitio'
+//         property 'sonar.organization', 'bindumounica'
+//         property 'sonar.host.url', 'https://sonarcloud.io'
 
-        // # Avoid deprecated implicit compile
-        property 'sonar.gradle.skipCompile', 'true'
-    }
-}
+//         // # Avoid deprecated implicit compile
+//         property 'sonar.gradle.skipCompile', 'true'
+//     }
+// }
 
 tasks.register('packageTar') {
     doLast {

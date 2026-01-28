@@ -1,40 +1,29 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 echo "[PIPELINE] Starting ETL run"
 
-# ----------------------------
 # Bootstrap directories
-# ----------------------------
-echo "[PIPELINE] Bootstrapping directories"
-mkdir -p data/curated
+mkdir -p data/curated data/processed
 
-# ----------------------------
 # Validate input
-# ----------------------------
-echo "[PIPELINE] Validating input"
 if [ ! -f data/raw/user_events.csv ]; then
-  echo "[ERROR] Input file not found"
+  echo "[ERROR] Input file missing"
   exit 1
 fi
 
-# ----------------------------
 # Run transformation
-# ----------------------------
-echo "[PIPELINE] Running transformation"
+echo "[PIPELINE] Running user aggregation"
 go run transforms/user_aggregate.go
 
-# ----------------------------
 # Validate output
-# ----------------------------
-OUTPUT_FILE="data/curated/user_activity_summary.csv"
-
-if [ ! -f "$OUTPUT_FILE" ]; then
-  echo "[ERROR] Output file not generated"
+if [ ! -f data/curated/user_activity_summary.csv ]; then
+  echo "[ERROR] Curated output not generated"
   exit 1
 fi
 
-echo "[PIPELINE] Output generated:"
-cat "$OUTPUT_FILE"
+# Promote curated → processed (real ETL step)
+cp data/curated/user_activity_summary.csv data/processed/
 
 echo "[PIPELINE] ETL completed successfully"
+echo "[PIPELINE] Processed data available at data/processed/user_activity_summary.csv"
