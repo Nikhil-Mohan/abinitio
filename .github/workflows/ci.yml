@@ -184,8 +184,13 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull DEV image
+        env:
+            DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+            IMAGE_NAME: ${{ env.IMAGE_NAME }}
+            TAG: ${{ github.ref_name }}-dev
         run: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev
+            docker pull "$DOCKER_USER/$IMAGE_NAME:$TAG"
+        
   
       - name: UAT Smoke Test
         run: |
@@ -219,8 +224,13 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull UAT image
+        env:
+            DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+            IMAGE_NAME: ${{ env.IMAGE_NAME }}
+            TAG: ${{ github.ref_name }}-uat
         run: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-uat
+            docker pull "$DOCKER_USER/$IMAGE_NAME:$TAG"
+        
   
       - name: Promote image to PROD
         run: |
