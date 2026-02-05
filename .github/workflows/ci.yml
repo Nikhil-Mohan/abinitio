@@ -67,6 +67,13 @@ jobs:
           chmod +x ci/pre-build.sh
           ./ci/pre-build.sh
 
+      - name: Build Go ETL binary
+        run: |
+            go mod tidy
+            go build -o etl transforms/user_aggregate.go
+            chmod +x etl
+        
+
       # -----------------------------
       # DEV GATE 2: RUNTIME VALIDATION
       # -----------------------------
@@ -164,14 +171,16 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push DEV Image
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
             docker build \
-              -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev \
-              -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }} \
+              -t $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev \
+              -t $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }} \
               .
         
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }}
+            docker push $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev
+            docker push $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }}
         
   
 
