@@ -67,6 +67,13 @@ jobs:
           chmod +x ci/pre-build.sh
           ./ci/pre-build.sh
 
+      - name: Build Go ETL binary
+        run: |
+            go mod tidy
+            go build -o etl transforms/user_aggregate.go
+            chmod +x etl
+        
+
       # -----------------------------
       # DEV GATE 2: RUNTIME VALIDATION
       # -----------------------------
