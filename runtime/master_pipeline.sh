@@ -1,5 +1,7 @@
+# bin/bash
+# set -euo pipefail
 #!/bin/sh
-set -euo pipefail
+set -eu
 
 echo "[PIPELINE] Starting ETL run"
 
@@ -8,9 +10,7 @@ mkdir -p data/curated data/processed
 
 echo "[PIPELINE] Validating Go module"
 test -f go.mod || { echo "❌ go.mod missing"; exit 1; }
-
-echo "[PIPELINE] Validating Go module"
-test -f go.mod || { echo "❌ go.mod missing"; exit 1; }
+echo "[PIPELINE] Go module validated"
 
 # Validate input
 if [ ! -f data/raw/user_events.csv ]; then
@@ -21,9 +21,26 @@ fi
 # Run transformation
 echo "[PIPELINE] Running user aggregation"
 # go run transforms/user_aggregate.go
-./etl
+./etl #!/bin/sh
+set -eu
 
-# Validate output
+echo "[PIPELINE] Starting ETL run"
+
+RUN_MODE=${RUN_MODE:-DEV}
+
+mkdir -p data/curated data/processed logs public
+
+echo "[PIPELINE] Validating Go module"
+test -f go.mod || { echo "go.mod missing"; exit 1; }
+
+if [ ! -f data/raw/user_events.csv ]; then
+  echo "[ERROR] Input file missing"
+  exit 1
+fi
+
+echo "[PIPELINE] Running user aggregation"
+./etl > logs/etl.log 2>&1
+
 if [ ! -f data/curated/user_activity_summary.csv ]; then
   echo "[ERROR] Curated output not generated"
   exit 1
@@ -34,3 +51,29 @@ cp data/curated/user_activity_summary.csv data/processed/
 
 echo "[PIPELINE] ETL completed successfully"
 echo "[PIPELINE] Processed data available at data/processed/user_activity_summary.csv"
+
+cp data/curated/user_activity_summary.csv data/processed/
+
+ROWS=$(($(wc -l < data/processed/user_activity_summary.csv)-1))
+
+cat <<EOF > public/index.html
+<html>
+<body>
+<h2>ETL Dashboard</h2>
+<p>Mode: $RUN_MODE</p>
+<p>Rows: $ROWS</p>
+<pre>$(tail -20 logs/etl.log)</pre>
+</body>
+</html>
+EOF
+
+if [ "$RUN_MODE" = "DEV" ]; then
+  echo "[PIPELINE] Starting dashboard"
+  python3 -m http.server 8080 --directory public &
+  sleep 10
+else
+  echo "[PIPELINE] CI mode – dashboard skipped"
+fi
+
+echo "[PIPELINE] ETL completed successfully"
+exit 0
