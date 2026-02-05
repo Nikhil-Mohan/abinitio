@@ -12,7 +12,6 @@ spec:
       labels:
         app: abnitio-etl-component
     spec:
-      restartPolicy: Never
       containers:
       - image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
         imagePullPolicy: IfNotPresent
