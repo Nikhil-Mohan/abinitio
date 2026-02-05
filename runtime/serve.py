@@ -3,11 +3,15 @@
 import http.server
 import socketserver
 import sys
-import os
 from pathlib import Path
 
 PORT = 8080
-PUBLIC_DIR = Path(__file__).parent.parent / "public"
+
+# Look for public/ in CWD first (where master_pipeline.sh runs from),
+# then relative to script location as fallback
+PUBLIC_DIR = Path("public")
+if not PUBLIC_DIR.exists():
+    PUBLIC_DIR = Path(__file__).parent.parent / "public"
 
 class IndexHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     """Custom handler that serves index.html for / requests."""
@@ -26,7 +30,7 @@ class IndexHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         print(f"[HTTP] {format % args}", flush=True)
 
 if __name__ == "__main__":
-    print(f"[SERVER] Public directory: {PUBLIC_DIR}", flush=True)
+    print(f"[SERVER] Looking for public directory: {PUBLIC_DIR}", flush=True)
     
     if not PUBLIC_DIR.exists():
         print(f"[ERROR] Public directory does not exist: {PUBLIC_DIR}", flush=True)
@@ -40,4 +44,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"[ERROR] {e}", flush=True)
         sys.exit(1)
+
 
