@@ -8,10 +8,10 @@ RUN_MODE=${RUN_MODE:-DEV}
 # Bootstrap directories
 mkdir -p data/curated data/processed logs public
 
-# Validate Go module
-echo "[PIPELINE] Validating Go module"
-test -f go.mod || { echo "go.mod missing"; exit 1; }
-echo "[PIPELINE] Go module validated"
+# Validate ETL Library
+echo "[PIPELINE] Validating ETL Library"
+test -x ./etl || { echo "ETL binary missing"; exit 1; }
+echo "[PIPELINE] ETL Library validated"
 
 # Validate input
 if [ ! -f data/raw/user_events.csv ]; then
