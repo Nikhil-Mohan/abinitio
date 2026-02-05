@@ -164,14 +164,16 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push DEV Image
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
             docker build \
-              -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev \
-              -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }} \
+              -t $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev \
+              -t $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }} \
               .
         
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }}
+            docker push $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev
+            docker push $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }}
         
   
 
