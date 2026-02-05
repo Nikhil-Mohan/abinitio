@@ -15,7 +15,7 @@ service:
                             connectorRef: harnessgitconnector
                             gitFetchType: Branch
                             paths:
-                                - Deployment/deployment_new.yaml
+                                - Deployment/deployment.yaml
                                 - Deployment/service.yaml
                             repoName: etl-component
                             branch: main
