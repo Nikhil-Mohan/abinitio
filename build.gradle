@@ -15,17 +15,6 @@ ext {
     versionTag = System.getenv("GITHUB_REF_NAME") ?: "local"
     imageName = "bindumounica87/abinitio-etl-poc:${versionTag}"
 }
-// sonarqube {
-//      properties {
-//         // # --- SonarCloud configuration ---
-//         property 'sonar.projectKey', 'bindumounica_github_actions_workflow_abinitio'
-//         property 'sonar.organization', 'bindumounica'
-//         property 'sonar.host.url', 'https://sonarcloud.io'
-
-//         // # Avoid deprecated implicit compile
-//         property 'sonar.gradle.skipCompile', 'true'
-//     }
-// }
 
 tasks.register('packageTar') {
     doLast {
