@@ -64,7 +64,8 @@ echo "[PIPELINE] Dashboard created: public/index.html ($(wc -c < public/index.ht
 # DEV only: start dashboard
 if [ "$RUN_MODE" = "DEV" ]; then
   echo "[PIPELINE] Starting dashboard on port 8080"
-  python3 -m http.server 8080 --directory public &
+  chmod +x runtime/serve.py
+  python3 runtime/serve.py &
   DASHBOARD_PID=$!
   sleep 2
   echo "[PIPELINE] Dashboard PID: $DASHBOARD_PID"
