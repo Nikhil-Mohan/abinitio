@@ -1,0 +1,3 @@
+2026/02/05 23:47:41 [ETL] Validating input schema: CSV has 3 columns, interface expects 3
+[ETL] Processed 5 records, produced 2 aggregated rows
+[ETL] Completed successfully
