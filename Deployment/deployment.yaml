@@ -2,17 +2,19 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: abnitio-etl-component
+  namespace: dev-ns
 spec:
   backoffLimit: 0
   template:
     metadata:
       labels:
         app: abnitio-etl-component
-  spec:
-    restartPolicy: Never
-    containers:
-    - name: abnitio-etl-component 
-      image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
-      imagePullPolicy: IfNotPresent
-      command: ["sleep", "infinity"]
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: abnitio-etl-component
+          image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
+          imagePullPolicy: IfNotPresent
+          command: ["sleep", "infinity"]
+
         
