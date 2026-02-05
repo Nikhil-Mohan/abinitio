@@ -1,0 +1,24 @@
+service:
+    name: k8s_deployment
+    identifier: etl_deployment
+    serviceDefinition:
+        type: Kubernetes
+        spec:
+            manifests:
+                - manifest:
+                    identifier: etl_deployment
+                    type: K8sManifest
+                    spec:
+                      store:
+                        type: Github
+                        spec:
+                            connectorRef: harnessgitconnector
+                            gitFetchType: Branch
+                            paths:
+                                - Deployment/deployment.yaml
+                                - Deployment/service.yaml
+                            repoName: etl-component
+                            branch: main
+                        skipResourceVersioning: false
+                        enableDeclarativeRollback: false
+    gitOpsEnabled: false
