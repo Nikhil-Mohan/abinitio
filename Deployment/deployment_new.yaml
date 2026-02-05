@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: abnitio-etl-component
 spec:
-  replicas:1
+  replicas: 1
   selector:
     matchLabels:
       app: abnitio-etl-component
