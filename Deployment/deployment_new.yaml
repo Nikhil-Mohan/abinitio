@@ -15,7 +15,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: abnitio-etl-component
-          image: <+serviceVariables.image_name>:<+serviceVariables.image_tag>
+          image: <+artifact.image>
           imagePullPolicy: IfNotPresent
           command: ["sleep", "infinity"]
 
