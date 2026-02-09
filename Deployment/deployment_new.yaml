@@ -15,6 +15,4 @@ spec:
       containers:
       - image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
         imagePullPolicy: IfNotPresent
-        name: abnitio-etl-component
-        ports:
-        - containerPort: 80
+        command: ["sleep", "infinity"]
