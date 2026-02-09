@@ -13,6 +13,7 @@ spec:
         app: abnitio-etl-component
     spec:
       containers:
-      - image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
+       -name: abnitio-etl-component
+        image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
         imagePullPolicy: IfNotPresent
         command: ["sleep", "infinity"]
