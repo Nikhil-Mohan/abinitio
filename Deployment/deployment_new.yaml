@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: abnitio-etl-component
+  name: abnitio-etl-component-new
 spec:
   replicas: 1
   selector:
@@ -13,7 +13,7 @@ spec:
         app: abnitio-etl-component
     spec:
       containers:
-       -name: abnitio-etl-component
+       -name: abnitio-etl-component-new
         image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
         imagePullPolicy: IfNotPresent
         command: ["sleep", "infinity"]
