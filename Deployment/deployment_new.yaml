@@ -4,8 +4,12 @@ metadata:
   name: abnitio-etl-component
   namespace: dev-ns
 spec:
-  template:
+  selector:
     matchLabels:
+        app: abnitio-etl-component
+  template:
+    metadata:
+      labels:
         app: abnitio-etl-component
     spec:
       restartPolicy: Always
