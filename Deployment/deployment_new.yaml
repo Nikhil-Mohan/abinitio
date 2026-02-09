@@ -1,19 +1,19 @@
-apiVersion: apps/v1
+apiVersion: app/v1
 kind: Deployment
 metadata:
-  name: abnitio-etl-component-new
+  name: abnitio-etl-component
+  namespace: dev-ns
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: abnitio-etl-component
   template:
     metadata:
       labels:
         app: abnitio-etl-component
     spec:
+      restartPolicy: Never
       containers:
-       -name: abnitio-etl-component-new
-        image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
-        imagePullPolicy: IfNotPresent
-        command: ["sleep", "infinity"]
+        - name: abnitio-etl-component
+          image: docker.io/bindumounica87/etl-component:graph-user-flow
+          imagePullPolicy: IfNotPresent
+          command: ["sleep", "infinity"]
+
+        
