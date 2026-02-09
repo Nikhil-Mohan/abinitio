@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: abnitio-etl-component1
+        app: abnitio-etl-component
     spec:
       restartPolicy: Always
       containers:
