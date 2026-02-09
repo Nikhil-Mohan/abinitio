@@ -13,7 +13,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: abnitio-etl-component
-          image: <+serviceVariables.Image_name>:<+serviceVariables.Image_tag>
+          image: docker.io/bindumounica87/etl-component:graph-user-flow-v1.1.1
           imagePullPolicy: IfNotPresent
           command: ["sleep", "infinity"]
 
