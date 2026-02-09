@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: abnitio-etl-component1
+  name: abnitio-etl-component
   namespace: dev-ns
 spec:
   selector:
@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: abnitio-etl-component
+        app: abnitio-etl-component1
     spec:
       restartPolicy: Always
       containers:
