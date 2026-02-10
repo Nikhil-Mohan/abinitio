@@ -1,0 +1,3 @@
+test:
+  - image_tag: <+serviceVariables.image_tag>
+  
