@@ -1,2 +1,3 @@
+deploymentName: abnitio-etl-component
 imagedata:
   tag: <+serviceVariables.image_tag>
