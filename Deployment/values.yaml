@@ -1,0 +1,2 @@
+imagedata:
+  tag: <+serviceVariables.image_tag>
