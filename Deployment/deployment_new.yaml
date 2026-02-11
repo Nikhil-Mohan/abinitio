@@ -15,7 +15,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: abnitio-etl-component
-          image: "docker.io/bindumounica87/etl-component:{{ .Values.imagedata.tag }}"
+          image: "{{ .Values.imagedata.image }}:{{ .Values.imagedata.tag }}"
           imagePullPolicy: IfNotPresent
           command: ["sleep", "infinity"]
 
