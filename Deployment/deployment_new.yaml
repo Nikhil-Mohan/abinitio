@@ -17,6 +17,6 @@ spec:
         - name: abnitio-etl-component
           image: "docker.io/bindumounica87/etl-component:{{ .Values.imagedata.tag }}"
           imagePullPolicy: IfNotPresent
-          command: ["sleep", "300"]
+          command: ["sleep", "infinity"]
 
         
