@@ -175,10 +175,10 @@ jobs:
           curl -s -u "${SONAR_TOKEN}:" "${serverUrl}/api/qualitygates/project_status?analysisId=${analysisId}" || true
 
       - name: Sonar Quality Gate
-        continue-on-error: true  # ← Add this to let pipeline continue even if gate fails
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
         with:
           scanMetadataReportFile: build/sonar/report-task.txt
+          pollingTimeoutSec: 600
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
