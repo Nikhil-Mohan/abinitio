@@ -182,8 +182,13 @@ jobs:
         
             docker push $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev
             docker push $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }}
-        
-  
+      - name: Trigger Harness Pipeline
+        run: |
+          curl -X POST \
+          "https://app.harness.io/gateway/pipeline/api/v1/pipelines/${{secrets.HARNESS_PIPELINE_ID}}/execute?accountIdentifier=${{secrets.HARNESS_ACCOUNT_ID}}&orgIdentifier=${{secrets.HARNESS_ORG_ID}}&projectIdentifier=${{ secrets.HARNESS_PROJECT_ID}}" \
+          -H "x-api-key: ${{ secrets.HARNESS_API_KEY }}" \
+          -H "Content-Type: application/json" \
+          -d '{}'
 
 # =====================================================
 # UAT STAGE – QUALITY & PROMOTION
