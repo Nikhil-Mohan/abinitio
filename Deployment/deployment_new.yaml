@@ -15,7 +15,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: abnitio-etl-component
-          image: "{{ .Values.imagedata.image }}:{{ .Values.imagedata.tag }}"
+          image: "{{ .Values.imagedata.name }}:{{ .Values.imagedata.tag }}"
           imagePullPolicy: IfNotPresent
           command: ["sleep", "infinity"]
 
