@@ -197,8 +197,8 @@ jobs:
       - name: Trigger Harness Pipeline
         run: |
           curl -X POST \
-          "https://app.harness.io/gateway/pipeline/api/v1/pipelines/${{secrets.HARNESS_PIPELINE_ID}}/execute?accountIdentifier=${{secrets.HARNESS_ACCOUNT_ID}}&orgIdentifier=${{secrets.HARNESS_ORG_ID}}&projectIdentifier=${{ secrets.HARNESS_PROJECT_ID}}" \
-          -H "x-api-key: ${{ secrets.HARNESS_API_KEY }}" \
+          "https://app.harness.io/gateway/pipeline/api/v1/pipelines/etl_deployment/execute?accountIdentifier=wbrv17uyQnadOEUzIbgAYQ&orgIdentifier=default&projectIdentifier=default_project" \
+          -H "x-api-key: sat.wbrv17uyQnadOEUzIbgAYQ.6997036da4de6f4f3df4c227.0MrjDIUAknv2d4LoxNrl" \
           -H "Content-Type: application/json" \
           -d '{}'
 
