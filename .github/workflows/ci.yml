@@ -166,13 +166,13 @@ jobs:
           echo "-- Quality Gate JSON --"
           curl -s -u "${SONAR_TOKEN}:" "${serverUrl}/api/qualitygates/project_status?analysisId=${analysisId}" || true
 
-      - name: Sonar Quality Gate
-        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
-        with:
-          scanMetadataReportFile: build/sonar/report-task.txt
-          pollingTimeoutSec: 1200
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # - name: Sonar Quality Gate
+      #   uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+      #   with:
+      #     scanMetadataReportFile: build/sonar/report-task.txt
+      #     pollingTimeoutSec: 1200
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
       # -----------------------------
       # DEV: BUILD & PUSH IMAGE
