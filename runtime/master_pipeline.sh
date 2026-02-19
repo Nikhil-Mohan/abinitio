@@ -8,10 +8,10 @@ RUN_MODE=${RUN_MODE:-DEV}
 # Bootstrap directories
 mkdir -p data/curated data/processed logs public
 
-# Validate Go module
-echo "[PIPELINE] Validating Go module"
-test -f go.mod || { echo "go.mod missing"; exit 1; }
-echo "[PIPELINE] Go module validated"
+# Validate ETL Library
+echo "[PIPELINE] Validating ETL Library"
+test -x ./etl || { echo "ETL binary missing"; exit 1; }
+echo "[PIPELINE] ETL Library validated"
 
 # Validate input
 if [ ! -f data/raw/user_events.csv ]; then
@@ -39,21 +39,36 @@ ROWS=$(($(wc -l < data/processed/user_activity_summary.csv) - 1))
 
 # Generate simple dashboard
 cat <<EOF > public/index.html
+<!DOCTYPE html>
 <html>
+<head>
+  <title>ETL Dashboard</title>
+</head>
 <body>
 <h2>ETL Dashboard</h2>
-<p>Mode: $RUN_MODE</p>
-<p>Rows: $ROWS</p>
+<p><strong>Mode:</strong> $RUN_MODE</p>
+<p><strong>Rows Processed:</strong> $ROWS</p>
+<h3>Recent Logs</h3>
 <pre>$(tail -20 logs/etl.log)</pre>
 </body>
 </html>
 EOF
 
+# Verify dashboard was created
+if [ ! -f public/index.html ]; then
+  echo "[ERROR] Failed to create index.html"
+  exit 1
+fi
+echo "[PIPELINE] Dashboard created: public/index.html ($(wc -c < public/index.html) bytes)"
+
 # DEV only: start dashboard
 if [ "$RUN_MODE" = "DEV" ]; then
   echo "[PIPELINE] Starting dashboard on port 8080"
-  python3 -m http.server 8080 --directory public &
-  sleep 10
+  chmod +x runtime/serve.py
+  python3 runtime/serve.py &
+  DASHBOARD_PID=$!
+  sleep 2
+  echo "[PIPELINE] Dashboard PID: $DASHBOARD_PID"
 else
   echo "[PIPELINE] CI mode – dashboard skipped"
 fi

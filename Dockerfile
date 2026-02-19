@@ -13,19 +13,22 @@ COPY . .
 RUN go build -o etl transforms/user_aggregate.go
 
 # ===========================
-# RUNTIME STAGE (LEAN)
+# RUNTIME STAGE
 # ===========================
-FROM alpine:latest
+FROM alpine:3.19
 
 WORKDIR /etl
 
-# RUN apk add --no-cache ca-certificates
+COPY --from=builder /app/etl .
+COPY runtime runtime
+COPY graphs graphs
+COPY data data
 
-COPY --from=builder /app/etl /etl/etl
-COPY runtime ./runtime
-COPY data ./data
-COPY graphs ./graphs
+# Fix permissions BEFORE user switch
+RUN chmod +x etl runtime/master_pipeline.sh \
+ && adduser -D etluser \
+ && chown -R etluser:etluser /etl
 
-EXPOSE 8080
+USER etluser
 
-ENTRYPOINT ["sh", "runtime/master_pipeline.sh"]
+ENTRYPOINT ["sh","runtime/master_pipeline.sh"]

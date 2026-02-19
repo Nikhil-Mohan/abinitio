@@ -34,9 +34,8 @@ jobs:
         with:
           go-version: "1.23.4"
 
-      - uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.7
+      # Use the project Gradle wrapper (`./gradlew`) instead of provisioning Gradle
+      # (removes intermittent HTTP 502 failures when provisioning Gradle distributions)
 
       - name: Derive version from Git tag
         run: |
@@ -79,7 +78,9 @@ jobs:
       # -----------------------------
       - name: Run ETL pipeline (DEV validation)
         run: |
-          chmod +x runtime/master_pipeline.sh
+          chmod +x etl runtime/master_pipeline.sh
+          # Run pipeline as the current runner user on GitHub hosted runners.
+          # Creating system users requires root; avoid it in CI.
           ./runtime/master_pipeline.sh
 
       # -----------------------------
@@ -138,28 +139,40 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonar --info
-      - name: Run Go tests
-        run: |
-          go test ./transforms/... 
-
       - name: Run Go tests with coverage
         run: |
             go test ./transforms/... -coverprofile=coverage.out
-      - name: Sonar Scan
-        run: ./gradlew sonar -Dsonar.go.coverage.reportPaths=coverage.out
+      - name: Build, test, and analyze with SonarQube
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew build sonar -Dsonar.go.coverage.reportPaths=coverage.out --info
+
+      - name: Sonar Debug Info (prints CE task + Quality Gate)
+        if: always()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          set -euo pipefail
+          metadata=build/sonar/report-task.txt
+          echo "== report-task.txt =="
+          sed -n '1,120p' "$metadata" || true
+          serverUrl=$(sed -n 's/serverUrl=\(.*\)/\1/p' "$metadata")
+          ceTaskUrl=$(sed -n 's/ceTaskUrl=\(.*\)/\1/p' "$metadata")
+          echo "CE task URL: $ceTaskUrl"
+          echo "-- CE task JSON --"
+          curl -s -u "${SONAR_TOKEN}:" "$ceTaskUrl" || true
+          analysisId=$(curl -s -u "${SONAR_TOKEN}:" "$ceTaskUrl" | jq -r '.task.analysisId') || true
+          echo "AnalysisId: $analysisId"
+          echo "-- Quality Gate JSON --"
+          curl -s -u "${SONAR_TOKEN}:" "${serverUrl}/api/qualitygates/project_status?analysisId=${analysisId}" || true
 
       - name: Sonar Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
         with:
-            scanMetadataReportFile: build/sonar/report-task.txt
+          scanMetadataReportFile: build/sonar/report-task.txt
+          pollingTimeoutSec: 1200
         env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
       # -----------------------------
       # DEV: BUILD & PUSH IMAGE
@@ -181,8 +194,13 @@ jobs:
         
             docker push $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-dev
             docker push $DOCKER_USER/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-sha-${{ github.sha }}
-        
-  
+      - name: Trigger Harness Pipeline
+        run: |
+          curl -X POST \
+          "https://app.harness.io/gateway/pipeline/api/v1/pipelines/${{secrets.HARNESS_PIPELINE_ID}}/execute?accountIdentifier=${{secrets.HARNESS_ACCOUNT_ID}}&orgIdentifier=${{secrets.HARNESS_ORG_ID}}&projectIdentifier=${{ secrets.HARNESS_PROJECT_ID}}" \
+          -H "x-api-key: ${{ secrets.HARNESS_API_KEY }}" \
+          -H "Content-Type: application/json" \
+          -d '{}'
 
 # =====================================================
 # UAT STAGE – QUALITY & PROMOTION
