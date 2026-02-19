@@ -198,7 +198,7 @@ jobs:
         run: |
           curl -X POST \
           "https://app.harness.io/gateway/pipeline/api/v1/pipelines/etl_deployment/execute?accountIdentifier=wbrv17uyQnadOEUzIbgAYQ&orgIdentifier=default&projectIdentifier=default_project" \
-          -H "x-api-key: sat.wbrv17uyQnadOEUzIbgAYQ.6997036da4de6f4f3df4c227.0MrjDIUAknv2d4LoxNrl" \
+          -H "x-api-key: sat.wbrv17uyQnadOEUzIbgAYQ.6997054f33fab474f4092d76.kJ0ubVKlPhlcYmMUPjVR" \
           -H "Content-Type: application/json" \
           -d '{}'
 
